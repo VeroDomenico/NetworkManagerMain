@@ -1,0 +1,64 @@
+
+
+
+
+For sending SMS messages, you can use the MessageUI framework provided by Apple. This framework provides a view controller that allows users to compose SMS messages and send them directly from your app. Here's an example of how to send an SMS message using the MessageUI framework in Swift:
+
+swift
+
+import UIKit
+import MessageUI
+
+class ViewController: UIViewController, MFMessageComposeViewControllerDelegate {
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        // Do any additional setup after loading the view.
+    }
+
+    @IBAction func sendSMS(_ sender: UIButton) {
+        let messageVC = MFMessageComposeViewController()
+        messageVC.recipients = ["1234567890"] // Replace with recipient's phone number
+        messageVC.body = "Hello, this is a test message." // Replace with your message
+        messageVC.messageComposeDelegate = self
+        self.present(messageVC, animated: true, completion: nil)
+    }
+
+    func messageComposeViewController(_ controller: MFMessageComposeViewController, didFinishWith result: MessageComposeResult) {
+        controller.dismiss(animated: true, completion: nil)
+    }
+
+}
+
+For sending iMessages, you can use the Messages framework provided by Apple. This framework allows you to send iMessages directly from your app. Here's an example of how to send an iMessage using the Messages framework in Swift:
+
+swift
+
+import UIKit
+import Messages
+
+class ViewController: UIViewController, MFMessageComposeViewControllerDelegate {
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        // Do any additional setup after loading the view.
+    }
+
+    @IBAction func sendiMessage(_ sender: UIButton) {
+        if MFMessageComposeViewController.canSendText() {
+            let messageVC = MFMessageComposeViewController()
+            messageVC.recipients = ["1234567890"] // Replace with recipient's phone number
+            messageVC.body = "Hello, this is a test iMessage." // Replace with your message
+            self.present(messageVC, animated: true, completion: nil)
+        } else {
+            let message = "iMessage is not available on this device."
+            let alertController = UIAlertController(title: nil, message: message, preferredStyle: .alert)
+            let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+            alertController.addAction(okAction)
+            self.present(alertController, animated: true, completion: nil)
+        }
+    }
+
+}
+
+Note that for iMessages, you will need to have an Apple Developer account and set up your app for iMessage App Extension development.

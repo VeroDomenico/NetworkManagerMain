@@ -1,0 +1,17 @@
+The goal of this is repo is to create a network managment system for handling friendships, and networks that are carreer oriented
+
+
+
+Components
+* Some way of storing information and routine checks
+* Some way of sending SMS, IMessages to those. 
+
+Concept:
+A good first concept would be creating a database that stores the information of people I have met like a contact book along with other characteristics. Then sends a happy birthday message on their birthday. 
+
+Proposed languages
+c++, golang, python, swift? 
+
+Swift For IOS on Apple
+
+We could also use phone link on windows pc but ideally we are communicating with a server that manages all of this information.
