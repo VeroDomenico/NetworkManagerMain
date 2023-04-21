@@ -18,6 +18,8 @@ Swift For IOS on Apple
 
 We could also use phone link on windows pc but ideally we are communicating with a server that manages all of this information.
 
+use docker?
+
 Tasks:
 1) Mongodb Driver setup to connect to database 
 2) Work on Authentication and Authorization
