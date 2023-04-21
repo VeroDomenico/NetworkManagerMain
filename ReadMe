@@ -7,7 +7,9 @@ Components
 * Some way of sending SMS, IMessages to those. 
 
 Concept:
-A good first concept would be creating a database that stores the information of people I have met like a contact book along with other characteristics. Then sends a happy birthday message on their birthday. 
+A good first concept would be creating a database that stores the information of people I have met like a contact book along with other characteristics.
+This will also allow for automation of sending messages. 
+
 
 Proposed languages
 c++, golang, python, swift? 
@@ -15,3 +17,8 @@ c++, golang, python, swift?
 Swift For IOS on Apple
 
 We could also use phone link on windows pc but ideally we are communicating with a server that manages all of this information.
+
+Tasks:
+1) Mongodb Driver setup to connect to database 
+2) Work on Authentication and Authorization
+3) Revist directives and see I want it to crawl linked in and message potenial people or notify me.
