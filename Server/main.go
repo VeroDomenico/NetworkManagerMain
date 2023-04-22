@@ -3,7 +3,6 @@ package main
 import (
 	"log"
 	"net/http"
-	mongodbsetup "networkMangerBackend/internal/MongoDBSetup"
 
 	"github.com/gorilla/mux"
 )
@@ -11,7 +10,6 @@ import (
 func main() {
 
 	log.Default().Print("Starting Server")
-	mongodbsetup.CreateMongoDbConnect()
 	//Create new router
 	r := mux.NewRouter()
 
