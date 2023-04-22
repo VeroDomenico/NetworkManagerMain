@@ -41,23 +41,24 @@ func authenticateLogin(w http.ResponseWriter, r *http.Request) (http.ResponseWri
 
 // }
 
+// TODO get from mongo db
 func validateCredentials(username string, password string) bool {
 
 	// Get the user from the database.
-	user, err := db.GetUser(username)
-	if err != nil {
-		// The user does not exist.
-		return false
-	}
+	// user, err := db.GetUser(username)
+	// if err != nil {
+	// 	// The user does not exist.
+	// 	return false
+	// }
 
-	// Compare the user's password with the password that was submitted.
-	if user.Password != password {
-		// The password is incorrect.
-		return false
-	}
+	// // Compare the user's password with the password that was submitted.
+	// if user.Password != password {
+	// 	// The password is incorrect.
+	// 	return false
+	// }
 
-	// The user's credentials are valid.
-	return true
+	// // The user's credentials are valid.
+	// return true
 }
 
 // Used for authorizaiton TODO
