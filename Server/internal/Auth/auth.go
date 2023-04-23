@@ -36,12 +36,6 @@ func authenticateLogin(w http.ResponseWriter, r *http.Request) (http.ResponseWri
 	return w, r
 }
 
-// TODO
-// func authorizeAccess() {
-
-// }
-
-// TODO get from mongo db
 func validateCredentials(username string, password string) bool {
 
 	// Get the user from the database.

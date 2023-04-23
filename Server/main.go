@@ -10,16 +10,19 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 )
 
-type Person struct {
-	firstName string
-}
-
 func main() {
-
+	type Person struct {
+		FirstName string `json:"firstName"`
+	}
 	var doc Person
 
-	mongodbsetup.FindOne(bson.M{"firstName": "John"}, &doc, "NetworkManager", "TestCollection")
-	fmt.Println(doc.firstName)
+	if err := mongodbsetup.FindOne(bson.M{"firstName": "John"}, &doc, "NetworkManager", "TestCollection"); err != nil {
+		// handle the error
+		log.Println("Failed to query the database with error: " + err.Error())
+		return
+	}
+
+	fmt.Println(doc)
 	log.Default().Print("Starting Server")
 	//Create new router
 	r := mux.NewRouter()

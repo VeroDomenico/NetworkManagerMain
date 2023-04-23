@@ -15,8 +15,8 @@ func createMongoDbConnect() (*mongo.Client, error) {
 
 	//using viper to pull config info
 	viper.SetConfigName("config.json")
-	//viper.AddConfigPath("D:\\github\\NetworkManagerMain")
-	viper.AddConfigPath("C:\\Users\\mecon\\Desktop\\NetworkManagerMain\\")
+	viper.AddConfigPath("D:\\github\\NetworkManagerMain")
+	// viper.AddConfigPath("C:\\Users\\mecon\\Desktop\\NetworkManagerMain\\")
 	viper.AutomaticEnv()
 	viper.SetConfigType("json")
 
@@ -55,12 +55,11 @@ func createMongoDbConnect() (*mongo.Client, error) {
 func FindOne(query interface{}, results interface{}, database string, collection string) error {
 	client, err := createMongoDbConnect()
 	if err != nil {
-
 		return err
 	}
 	defer client.Disconnect(context.Background())
 
-	err = client.Database(database).Collection(collection).FindOne(context.Background(), query).Decode(&results)
+	err = client.Database(database).Collection(collection).FindOne(context.Background(), query).Decode(results)
 	if err != nil {
 		log.Println("Failed to Query the Database with Error: " + err.Error())
 		return err
