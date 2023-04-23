@@ -1,14 +1,25 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
+	mongodbsetup "networkMangerBackend/internal/MongoDBSetup"
 
 	"github.com/gorilla/mux"
+	"go.mongodb.org/mongo-driver/bson"
 )
+
+type Person struct {
+	firstName string
+}
 
 func main() {
 
+	var doc Person
+
+	mongodbsetup.FindOne(bson.M{"firstName": "John"}, &doc, "NetworkManager", "TestCollection")
+	fmt.Println(doc.firstName)
 	log.Default().Print("Starting Server")
 	//Create new router
 	r := mux.NewRouter()
