@@ -51,7 +51,8 @@ func createMongoDbConnect() (*mongo.Client, error) {
 	return client, nil
 }
 
-// this will take in a filter and query the mongodb for one match and return a result of the struct passed in and an error if there is a failure
+// Find one creates a connection with the mongo db and returns a queried result but only one
+// and an error if there is a failure
 func FindOne(query interface{}, results interface{}, database string, collection string) error {
 	client, err := createMongoDbConnect()
 	if err != nil {
@@ -68,26 +69,22 @@ func FindOne(query interface{}, results interface{}, database string, collection
 	return nil
 }
 
-// func FindAll(query interface{}, results interface{}, database string, collection string) (results interface{}, error) {
+// Find All creates a connection to the mongodb and then queries based upon provided query and updates the
+// original result memoryspace
+func FindAll(query interface{}, results interface{}, db string, col string) error {
+	client, err := createMongoDbConnect()
+	if err != nil {
+		return err
+	}
+	defer client.Disconnect(context.Background())
 
-// 	client, err := createMongoDbConnect()
-// 	if err != nil {
-// 		return nil, err
-// 	}
+	cur, err := client.Database(db).Collection(col).Find(context.Background(), query)
+	defer cur.Close(context.Background())
 
-// 	//TODO
-// 	// if client.Database(database).Collection(collection).Find(context.Background(), query).Decode(results) != nil {
-// 	// 	log.Println("Failed to Query the Database with Error: " + err.Error())
-// 	// 	return nil, err
-// 	// }
+	err = cur.All(context.Background(), results)
+	if err != nil {
+		return err
+	}
 
-// 	if client.Database(database).Collection(collection).Find(context.Background(),query).Decode(res)
-
-// 	log.Println("Cleaning up allocated memory for monogdb connection")
-// 	if client.Disconnect(context.Background()) != nil {
-// 		log.Println("Failed to close mongodb connection")
-// 		return nil, err
-// 	}
-// 	return nil, nil
-
-// }
+	return nil
+}

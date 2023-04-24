@@ -15,14 +15,21 @@ func main() {
 		FirstName string `json:"firstName"`
 	}
 	var doc Person
+	var doc2 []Person
 
 	if err := mongodbsetup.FindOne(bson.M{"firstName": "John"}, &doc, "NetworkManager", "TestCollection"); err != nil {
 		// handle the error
 		log.Println("Failed to query the database with error: " + err.Error())
 		return
 	}
+	if err := mongodbsetup.FindAll(bson.M{"firstName": "John"}, &doc2, "NetworkManager", "TestCollection"); err != nil {
+		// handle the error
+		log.Println("Failed to query the database with error: " + err.Error())
+		return
+	}
 
 	fmt.Println(doc)
+	fmt.Println(doc2)
 	log.Default().Print("Starting Server")
 	//Create new router
 	r := mux.NewRouter()
