@@ -17,12 +17,12 @@ func main() {
 	var doc Person
 	var doc2 []Person
 
-	if err := mongodbsetup.FindOne(bson.M{"firstName": "John"}, &doc, "NetworkManager", "TestCollection"); err != nil {
+	if err := mongodbsetup.FindOne(bson.M{"firstName": "John"}, &doc, "TestCollection"); err != nil {
 		// handle the error
 		log.Println("Failed to query the database with error: " + err.Error())
 		return
 	}
-	if err := mongodbsetup.FindAll(bson.M{"firstName": "John"}, &doc2, "NetworkManager", "TestCollection"); err != nil {
+	if err := mongodbsetup.FindAll(bson.M{"firstName": "John"}, &doc2, "TestCollection"); err != nil {
 		// handle the error
 		log.Println("Failed to query the database with error: " + err.Error())
 		return
