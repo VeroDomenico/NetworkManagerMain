@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"sync"
 
 	"github.com/spf13/viper"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -12,34 +13,42 @@ import (
 )
 
 var (
-	CollectionList = make(map[string]*mongo.Collection)
+	CollectionList = make(map[string]*mongo.Collection) // Global MongoDB pointer for each Collection in viper
+	singleInstance *collectionListSingleton
+	lock           = &sync.Mutex{}
 )
 
-func init() {
-	// Todo maybe move to maim.go?
-	log.Println("Setting up Viper config")
-	viper.SetConfigName("config.json")
-	viper.AddConfigPath("D:\\github\\NetworkManagerMain")
-	// viper.AddConfigPath("C:\\Users\\mecon\\Desktop\\NetworkManagerMain\\")
-	viper.AutomaticEnv()
-	viper.SetConfigType("json")
+// Singleton Design Pattern
+type collectionListSingleton struct {
+	// This construct is prvate, there will only be a singleton class can create instance of itself
+	CollectionList map[string]*mongo.Collection
+}
 
-	//Used for Login
-	log.Println("Reading in Config File")
-	err := viper.ReadInConfig()
-	if err != nil {
-		log.Print(err.Error())
-		panic("Error")
+func getInstance() *collectionListSingleton {
+	if singleInstance == nil {
+		lock.Lock()
+		// In case of error unlock
+		defer lock.Unlock()
+		if singleInstance == nil {
+			log.Println("Creating singleton for collections")
+			singleInstance = &collectionListSingleton{}
+		} else {
+			log.Println("Single Instance already Created")
+		}
+	} else {
+		log.Println("Single Instance already Created")
 	}
+	return singleInstance
+}
 
-	log.Println("Initializing Mongo DB Conneciton")
+func init() {
+	log.Println("Initializing Mongo DB Connection")
 	MongoClient, err := createMongoDbConnect()
 	if err != nil {
 		log.Println("Error in creating a mongoDB Client: " + err.Error())
 		panic(err)
 
 	}
-	defer MongoClient.Disconnect(context.Background())
 	MongoClient.Ping(context.Background(), readpref.Primary())
 
 	log.Println("Initializing Mongo DB Collections")
@@ -52,12 +61,12 @@ func init() {
 	for _, collection := range collections {
 		CollectionList[collection] = MongoClient.Database(Database).Collection(collection)
 	}
-
 }
 
 // Establishes connection with mongoDB server
 func createMongoDbConnect() (*mongo.Client, error) {
 
+	// TODO if credentials are needed
 	//Credential pulled from viper string to connect
 	// log.Println("Loading Credentials")
 	// credential := options.Credential{
@@ -97,7 +106,7 @@ func FindOne(query interface{}, results interface{}, collection string) error {
 }
 
 // Find All creates a connection to the mongodb and then queries based upon provided query and updates the
-// original result memoryspace
+// original result memory space
 func FindAll(query interface{}, results interface{}, collection string) error {
 
 	cur, err := CollectionList[collection].Find(context.Background(), query)
