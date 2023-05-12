@@ -12,36 +12,27 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/readpref"
 )
 
+type collectionListSingleton map[string]*mongo.Collection
+
 var (
-	CollectionList = make(map[string]*mongo.Collection) // Global MongoDB pointer for each Collection in viper
-	singleInstance *collectionListSingleton
-	lock           = &sync.Mutex{}
+	CollectionList           = make(map[string]*mongo.Collection) // Global MongoDB pointer for each Collection in viper
+	singleCollectionInstance collectionListSingleton
+	once                     sync.Once
 )
 
 // Singleton Design Pattern
-type collectionListSingleton struct {
-	// This construct is prvate, there will only be a singleton class can create instance of itself
-	CollectionList map[string]*mongo.Collection
-}
+// Used here in order to open  onnections to the database and maintain a single instance so that we do not overload the database.
+type collectionListSingletonC map[string]*mongo.Collection
 
-func getInstance() *collectionListSingleton {
-	if singleInstance == nil {
-		lock.Lock()
-		// In case of error unlock
-		defer lock.Unlock()
-		if singleInstance == nil {
-			log.Println("Creating singleton for collections")
-			singleInstance = &collectionListSingleton{}
-		} else {
-			log.Println("Single Instance already Created")
-		}
-	} else {
-		log.Println("Single Instance already Created")
-	}
-	return singleInstance
+func getCollectionInstance() collectionListSingleton {
+	once.Do(func() { //Atomic call
+		singleCollectionInstance = make(collectionListSingleton)
+	})
+	return singleCollectionInstance
 }
 
 func init() {
+
 	log.Println("Initializing Mongo DB Connection")
 	MongoClient, err := createMongoDbConnect()
 	if err != nil {
@@ -59,7 +50,7 @@ func init() {
 	collections := viper.GetStringSlice("db.dbCollections")
 	fmt.Println(collections)
 	for _, collection := range collections {
-		CollectionList[collection] = MongoClient.Database(Database).Collection(collection)
+		getCollectionInstance()[collection] = MongoClient.Database(Database).Collection(collection)
 	}
 }
 
@@ -96,7 +87,7 @@ func createMongoDbConnect() (*mongo.Client, error) {
 // and an error if there is a failure
 func FindOne(query interface{}, results interface{}, collection string) error {
 
-	err := CollectionList[collection].FindOne(context.Background(), query).Decode(results)
+	err := getCollectionInstance()[collection].FindOne(context.Background(), query).Decode(results)
 	if err != nil {
 		log.Println("Failed to Query the Database with Error: " + err.Error())
 		return err
@@ -109,7 +100,7 @@ func FindOne(query interface{}, results interface{}, collection string) error {
 // original result memory space
 func FindAll(query interface{}, results interface{}, collection string) error {
 
-	cur, err := CollectionList[collection].Find(context.Background(), query)
+	cur, err := getCollectionInstance()[collection].Find(context.Background(), query)
 
 	err = cur.All(context.Background(), results)
 	if err != nil {
