@@ -15,3 +15,5 @@ type dbModel struct {
 	CollectionName  string
 	MongoCollection *mongo.Collection
 }
+
+// Database Model Struct for Data

@@ -7,27 +7,10 @@ import (
 	mongodbsetup "networkMangerBackend/internal/MongoDBSetup"
 
 	"github.com/gorilla/mux"
-	"github.com/spf13/viper"
 	"go.mongodb.org/mongo-driver/bson"
 )
 
 func main() {
-
-	// Todo move to main init if needed
-	log.Println("Setting up Viper config")
-	viper.SetConfigName("config.json")
-	viper.AddConfigPath("D:\\github\\NetworkManagerMain")
-	// viper.AddConfigPath("C:\\Users\\mecon\\Desktop\\NetworkManagerMain\\")
-	viper.AutomaticEnv()
-	viper.SetConfigType("json")
-
-	//Used for Login
-	log.Println("Reading in Config File")
-	err := viper.ReadInConfig()
-	if err != nil {
-		log.Print(err.Error())
-		panic("Error")
-	}
 
 	type Person struct {
 		FirstName string `json:"firstName"`

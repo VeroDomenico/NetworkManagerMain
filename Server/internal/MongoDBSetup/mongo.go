@@ -9,7 +9,6 @@ import (
 	"github.com/spf13/viper"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	"go.mongodb.org/mongo-driver/mongo/readpref"
 )
 
 type collectionListSingleton map[string]*mongo.Collection
@@ -25,7 +24,7 @@ var (
 type collectionListSingletonC map[string]*mongo.Collection
 
 func getCollectionInstance() collectionListSingleton {
-	once.Do(func() { //Atomic call
+	once.Do(func() { //Atomic call will only happen once
 		singleCollectionInstance = make(collectionListSingleton)
 	})
 	return singleCollectionInstance
@@ -33,14 +32,29 @@ func getCollectionInstance() collectionListSingleton {
 
 func init() {
 
+	log.Println("Setting up Viper config")
+
+	viper.SetConfigName("config.json")
+	viper.AddConfigPath("D:\\github\\NetworkManagerMain")
+	// viper.AddConfigPath("C:\\Users\\mecon\\Desktop\\NetworkManagerMain\\")
+	viper.AutomaticEnv()
+	viper.SetConfigType("json")
+
+	// Reading in the config path
+	log.Println("Reading in Config File")
+	err := viper.ReadInConfig()
+	if err != nil {
+		log.Print("Fatal Error Reading in Config" + err.Error())
+		panic("Error")
+	}
+
+	//init mongoDB connection
 	log.Println("Initializing Mongo DB Connection")
 	MongoClient, err := createMongoDbConnect()
 	if err != nil {
 		log.Println("Error in creating a mongoDB Client: " + err.Error())
 		panic(err)
-
 	}
-	MongoClient.Ping(context.Background(), readpref.Primary())
 
 	log.Println("Initializing Mongo DB Collections")
 	if !viper.IsSet("db.dbCollections") {
@@ -65,6 +79,8 @@ func createMongoDbConnect() (*mongo.Client, error) {
 	// 	Username:   viper.GetString("db.user"),
 	// 	Password:   viper.GetString("db.password"),
 	// }
+
+	// Todo move to main init if needed
 
 	uri := viper.GetString("db.uri")
 
