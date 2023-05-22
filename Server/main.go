@@ -1,12 +1,11 @@
 package main
 
 import (
-	"fmt"
+	"github.com/gorilla/mux"
 	"log"
 	"net/http"
 	mongodbsetup "networkMangerBackend/internal/MongoDBSetup"
 
-	"github.com/gorilla/mux"
 	"go.mongodb.org/mongo-driver/bson"
 )
 
