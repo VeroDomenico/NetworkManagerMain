@@ -1,3 +1,13 @@
+Redesign: 
+** Need to Update Design Req for this due to shift in ability to generate these. **
+
+This will now send automated messages to those who are logged in the database to automatically say happy birhtday. This will also send regular reminders to message individuals who you havent talked to in a while. 
+
+
+
+
+______
+
 The goal of this is repo is to create a network managment system for handling friendships, and networks that are carreer oriented
 
 
