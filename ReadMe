@@ -20,8 +20,11 @@ We could also use phone link on windows pc but ideally we are communicating with
 
 use docker?
 
+Failures: 
+Usage of google model as a alt to chat-gpt API failed. 2) Google Model Failure too little parameters for meaningful generation
+
 Tasks:
 1) Mongodb Driver setup to connect to database
-2) Google Model
+2) use chat gtp API to generate messages. 
 3) Work on Authentication and Authorization
 4) Revist directives and see I want it to crawl linked in and message potenial people or notify me.
